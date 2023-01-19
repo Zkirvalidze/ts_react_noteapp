@@ -3,21 +3,36 @@ import { Form, Stack, Row, Col, Button } from 'react-bootstrap';
 import CreatableReactSelect from 'react-select/creatable';
 import { Link } from 'react-router-dom';
 import { NoteData, Tag } from '../App';
+import { v4 as uuidV4 } from 'uuid';
+import { useNavigate } from 'react-router-dom';
 
 type NoteFormProps = {
   onSubmit: (data: NoteData) => void;
+  onAddTag: (tag: Tag) => void;
+  availableTags: Tag[];
+  title: string;
+  markdown: string;
 };
-const NoteForm = ({ onSubmit }: NoteFormProps) => {
+const NoteForm = ({
+  onSubmit,
+  onAddTag,
+  availableTags,
+  title = '',
+  markdown = '',
+}: NoteFormProps) => {
   const titleRef = useRef<HTMLInputElement>(null);
   const markdownRef = useRef<HTMLTextAreaElement>(null);
   const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+  const navigate = useNavigate();
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     onSubmit({
       title: titleRef.current!.value,
       markdown: markdownRef.current!.value,
-      tags: [],
+      tags: selectedTags,
     });
+    navigate('..');
   };
   return (
     <Form onSubmit={handleSubmit}>
@@ -26,7 +41,7 @@ const NoteForm = ({ onSubmit }: NoteFormProps) => {
           <Col>
             <Form.Group controlId="title">
               <Form.Label>Title</Form.Label>
-              <Form.Control required />
+              <Form.Control required ref={titleRef} defaultValue={title} />
             </Form.Group>
           </Col>
           <Col>
@@ -34,10 +49,20 @@ const NoteForm = ({ onSubmit }: NoteFormProps) => {
               <Form.Label>Tags</Form.Label>
               <CreatableReactSelect
                 isMulti
+                onCreateOption={(label) => {
+                
+                  const newTag = { id: uuidV4(), label };
+                  onAddTag(newTag);
+                  setSelectedTags((prev) => [...prev, newTag]);
+                }}
                 value={selectedTags.map((tag) => {
                   return { label: tag.label, value: tag.id };
                 })}
+                options={availableTags?.map((tag) => {
+                  return { label: tag.label, value: tag.id };
+                })}
                 onChange={(tags) => {
+                  console.log(1)
                   setSelectedTags(
                     tags.map((tag) => {
                       return { label: tag.label, id: tag.value };
@@ -50,7 +75,13 @@ const NoteForm = ({ onSubmit }: NoteFormProps) => {
         </Row>
         <Form.Group controlId="markdown">
           <Form.Label>Body</Form.Label>
-          <Form.Control required as="textarea" rows={15} />
+          <Form.Control
+            required
+            as="textarea"
+            rows={15}
+            ref={markdownRef}
+            defaultValue={markdown}
+          />
         </Form.Group>
         <Stack direction="horizontal" gap={2} className="justify-content-end">
           <Button type="submit" variant="primary">
