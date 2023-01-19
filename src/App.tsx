@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import { v4 as uuidV4 } from 'uuid';
-
+import NoteList from './components/NoteList';
 import NewNote from './components/NewNote';
 import { useLocalStorage } from './hooks/useLocalStorage';
 
@@ -60,7 +60,7 @@ const App = () => {
   return (
     <Container className="my-4">
       <Routes>
-        <Route path="/" element={<h1>Home</h1>} />
+        <Route path="/" element={<NoteList notes={notesWithTag} availableTags={tags} />} />
         <Route
           path="/new"
           element={

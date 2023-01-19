@@ -12,6 +12,7 @@ type NoteFormProps = {
   availableTags: Tag[];
   title: string;
   markdown: string;
+  tags: Tag[]
 };
 const NoteForm = ({
   onSubmit,
@@ -19,10 +20,11 @@ const NoteForm = ({
   availableTags,
   title = '',
   markdown = '',
+  tags=[]
 }: NoteFormProps) => {
   const titleRef = useRef<HTMLInputElement>(null);
   const markdownRef = useRef<HTMLTextAreaElement>(null);
-  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+  const [selectedTags, setSelectedTags] = useState<Tag[]>(tags);
   const navigate = useNavigate();
 
   const handleSubmit = (e: FormEvent) => {
@@ -50,7 +52,6 @@ const NoteForm = ({
               <CreatableReactSelect
                 isMulti
                 onCreateOption={(label) => {
-                
                   const newTag = { id: uuidV4(), label };
                   onAddTag(newTag);
                   setSelectedTags((prev) => [...prev, newTag]);
@@ -62,7 +63,6 @@ const NoteForm = ({
                   return { label: tag.label, value: tag.id };
                 })}
                 onChange={(tags) => {
-                  console.log(1)
                   setSelectedTags(
                     tags.map((tag) => {
                       return { label: tag.label, id: tag.value };
