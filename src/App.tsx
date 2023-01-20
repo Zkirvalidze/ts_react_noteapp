@@ -6,7 +6,8 @@ import { v4 as uuidV4 } from 'uuid';
 import NoteList from './components/NoteList';
 import NewNote from './components/NewNote';
 import { useLocalStorage } from './hooks/useLocalStorage';
-
+import { NoteLayout } from './components/NoteLayout';
+import { Note } from './components/Note';
 export type Note = {
   id: string;
 } & NoteData;
@@ -60,7 +61,10 @@ const App = () => {
   return (
     <Container className="my-4">
       <Routes>
-        <Route path="/" element={<NoteList notes={notesWithTag} availableTags={tags} />} />
+        <Route
+          path="/"
+          element={<NoteList notes={notesWithTag} availableTags={tags} />}
+        />
         <Route
           path="/new"
           element={
@@ -71,8 +75,8 @@ const App = () => {
             />
           }
         />
-        <Route path="/:id">
-          <Route index element={<h1>show</h1>} />
+        <Route path="/:id" element={<NoteLayout notes={notesWithTag} />}>
+          <Route index element={<Note/>} />
           <Route path="edit" element={<h1>Edit</h1>} />
         </Route>
         <Route path="*" element={<Navigate to="/" />} />
