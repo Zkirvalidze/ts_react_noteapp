@@ -10,10 +10,8 @@ type NoteFormProps = {
   onSubmit: (data: NoteData) => void;
   onAddTag: (tag: Tag) => void;
   availableTags: Tag[];
-  title: string;
-  markdown: string;
-  tags: Tag[]
-};
+} & Partial<NoteData>;
+
 const NoteForm = ({
   onSubmit,
   onAddTag,
